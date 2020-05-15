@@ -3,6 +3,18 @@
 
 
 class Player:
-    def __init__(self, name, current_room):
+    def __init__(self, name, room, items=[]):
         self.name = name
-        self.current_room = current_room
+        self.room = room
+        self.items = []
+
+    def print_items(self):
+        for item in self.items:
+            return item
+
+    def add_item(self, new_item):
+        self.items.append(new_item)
+        self.print_items()
+
+    def __str__(self):
+        return f'{self.name} is in {self.room}'
