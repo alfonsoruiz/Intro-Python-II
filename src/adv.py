@@ -1,6 +1,9 @@
 import sys
+import textwrap
+
 from room import Room
 from player import Player
+from item import Item
 
 # Declare all the rooms
 
@@ -41,34 +44,50 @@ room['treasure'].s_to = room['narrow']
 
 # Make a new player object that is currently in the 'outside' room.
 player = Player('Rupert', room['outside'])
-# Write a loop that:
-#
-# * Prints the current room name
-# * Prints the current description (the textwrap module might be useful here).
-# * Waits for user input and decides what to do.
-#
-# If the user enters a cardinal direction, attempt to move to the room there.
-# Print an error message if the movement isn't allowed.
-#
-# If the user enters "q", quit the game.
+hammer = Item('hammer', 'A tool to hit things with')
+player.add_item(hammer)
+
 directions = {'n': 'n_to', 's': 's_to', 'e': 'e_to', 'w': 'w_to'}
 
-while True:
-    print(player.room.name)
-    print(player.room.description)
-    print(player.room.print_items())
+player_input = True
 
-    choice = input(
-        "Which way do you want to go? You can choose to go e, w, n, s ")
+# Write a loop that:
+while player_input != False:
+    # * Prints the current room name
+    print(f'\nYou are currently in {player.room.name}.')
 
-    if choice == "q":
-        print('Game over')
-        sys.exit()
+    # * Prints the current description (the textwrap module might be useful here).
+    print(f'{player.room.description}')
 
-    direction = directions[choice]
+    # * Waits for user input and decides what to do.
+    player_input = input("\nEnter a command:\n")
+    player_selection = player_input.split()
+    command = player_selection[0]
 
-    try:
-        player.room = getattr(player.room, direction)
+    if len(player_selection) > 1:
+        item = player_selection[1]
 
-    except AttributeError:
-        print("Sorry you can't go that way!")
+        if command == 'get' or command == 'take':
+            if item in player.room.items:
+                player.room.remove(item)
+                player.add_item(item)
+            else:
+                print(f'\n***** {item} is not in the room *****\n')
+        elif command == 'drop':
+            player.remove_item(item)
+            player.room.add_item(item)
+
+    elif command == 'q' or 'n' or 's' or 'e' or 'w' or 'i':
+        if command == 'q':
+            print('Game Over')
+            player_input = False
+        elif command == 'i':
+            player.print_items()
+        else:
+            direction = directions[player_input]
+            # If the user enters a cardinal direction, attempt to move to the room there.
+            try:
+                player.room = getattr(player.room, direction)
+            # Print an error message if the movement isn't allowed.
+            except AttributeError:
+                print("\n***** You can't go in that direction *****\n")

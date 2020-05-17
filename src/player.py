@@ -10,11 +10,14 @@ class Player:
 
     def print_items(self):
         for item in self.items:
-            return item
+            print(f'Inventory: \n{item.name} = {item.description}\n')
 
     def add_item(self, new_item):
         self.items.append(new_item)
-        self.print_items()
+
+    def remove_item(self, item):
+        self.items.remove(item)
+        print(f'You have left your {item}')
 
     def __str__(self):
-        return f'{self.name} is in {self.room}'
+        return f'{self.name}, {self.room}, {self.items}'
