@@ -3,21 +3,28 @@
 
 
 class Player:
-    def __init__(self, name, room, items=[]):
+    def __init__(self, name, room, inventory=[]):
         self.name = name
         self.room = room
-        self.items = []
+        self.inventory = []
 
-    def print_items(self):
-        for item in self.items:
+    def print_inventory(self):
+        if len(self.inventory) < 1:
+            print(f'***** There are currently no items in your inventory *****')
+
+        for item in self.inventory:
             print(f'Inventory: \n{item.name} = {item.description}\n')
 
     def add_item(self, new_item):
-        self.items.append(new_item)
+        self.inventory.append(new_item)
+        new_item.on_take()
 
     def remove_item(self, item):
-        self.items.remove(item)
-        print(f'You have left your {item}')
+        for inventory_item in self.inventory:
+            if inventory_item.name == item:
+                index_of_item = self.inventory.index(inventory_item)
+                inventory_item.on_drop()
+                return self.inventory.pop(index_of_item)
 
     def __str__(self):
-        return f'{self.name}, {self.room}, {self.items}'
+        return f'{self.name}, {self.room}, {self.inventory}'

@@ -12,8 +12,13 @@ class Room:
         self.items.append(new_item)
 
     def remove_item(self, item):
-        self.items.remove(item)
-        print(f'You have removed {item} form {self.name}')
+        for room_item in self.items:
+            if room_item.name == item:
+                index_of_item = self.items.index(room_item)
+                room_item.on_take()
+                return self.items.pop(index_of_item)
+            else:
+                return False
 
     def __str__(self):
-        return f'{self.name}, {self.description}'
+        return f'{self.name}, {self.description}, {self.items}'

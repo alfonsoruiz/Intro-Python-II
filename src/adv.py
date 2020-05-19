@@ -61,28 +61,34 @@ while player_input != False:
 
     # * Waits for user input and decides what to do.
     player_input = input("\nEnter a command:\n")
+    print('')
     player_selection = player_input.split()
+
     command = player_selection[0]
 
+    # If more than one argument is passed on script call
     if len(player_selection) > 1:
         item = player_selection[1]
 
+        # if player input is get or take
         if command == 'get' or command == 'take':
-            if item in player.room.items:
-                player.room.remove(item)
-                player.add_item(item)
-            else:
-                print(f'\n***** {item} is not in the room *****\n')
-        elif command == 'drop':
-            player.remove_item(item)
-            player.room.add_item(item)
+            room_item = player.room.remove_item(item)
 
+            if room_item:
+                player.add_item(room_item)
+            else:
+                print("***** That item is not the room *****")
+        # If player input is drop
+        elif command == 'drop':
+            player_item = player.remove_item(item)
+            player.room.add_item(player_item)
+    # If only one argument is passed on script call
     elif command == 'q' or 'n' or 's' or 'e' or 'w' or 'i':
         if command == 'q':
             print('Game Over')
             player_input = False
-        elif command == 'i':
-            player.print_items()
+        elif command == 'i' or command == 'inventory':
+            player.print_inventory()
         else:
             direction = directions[player_input]
             # If the user enters a cardinal direction, attempt to move to the room there.
